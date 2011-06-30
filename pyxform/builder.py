@@ -60,8 +60,8 @@ class SurveyElementBuilder(object):
         question_type_str = d[Question.TYPE]
         d_copy = d.copy()
 
-        if question_type_str.startswith(u"select all that apply"):
-            self._add_none_option_to_select_all_that_apply(d_copy)
+        #if question_type_str.startswith(u"select all that apply"):
+         #   self._add_none_option_to_select_all_that_apply(d_copy)
 
         # hack job right here to get this to work
         if question_type_str.endswith(u" or specify other"):
@@ -223,7 +223,7 @@ def create_survey(
     builder = SurveyElementBuilder()
     builder.set_sections(sections)
     builder.set_question_type_dictionary(question_type_dictionary)
-    assert name_of_main_section in sections, name_of_main_section
+    #assert name_of_main_section in sections, name_of_main_section
     survey = builder.create_survey_element_from_dict(
         sections[name_of_main_section]
         )

@@ -11,11 +11,11 @@ class SurveyElement(object):
     """
 
     #Supported media types for attaching to questions
-    SUPPORTED_MEDIA = {
+    SUPPORTED_MEDIA = [
         "image",
         "audio",
         "video"
-        }
+        ]
     
 
     # the following are important keys for the underlying dict that
@@ -39,7 +39,7 @@ class SurveyElement(object):
         TYPE : u"",
         BIND : {},
         CONTROL : {},
-        MEDIA : u""
+        MEDIA : {}
         }
 
     def __init__(self, *args, **kwargs):

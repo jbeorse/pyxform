@@ -57,10 +57,17 @@ class UploadQuestion(Question):
 class Option(SurveyElement):
 
     def __init__(self, *args, **kwargs):
-        d = {
-            self.LABEL : kwargs[self.LABEL],
-            self.NAME : unicode(kwargs[self.NAME]),
-            }
+        if kwargs.has_key(self.MEDIA):
+            d = {
+                self.LABEL : kwargs[self.LABEL],
+                self.MEDIA : kwargs[self.MEDIA],
+                self.NAME : unicode(kwargs[self.NAME]),
+                }
+        else:
+            d = {
+                self.LABEL : kwargs[self.LABEL],
+                self.NAME : unicode(kwargs[self.NAME]),
+                }
         SurveyElement.__init__(self, **d)
 
     def xml_value(self):
