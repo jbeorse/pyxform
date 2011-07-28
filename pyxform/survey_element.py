@@ -12,9 +12,9 @@ class SurveyElement(object):
 
     #Supported media types for attaching to questions
     SUPPORTED_MEDIA = [
-        "image",
+        "images",
         "audio",
-        "video"
+        "videos"
         ]
     
 
