@@ -12,10 +12,10 @@ class SurveyElement(object):
 
     #Supported media types for attaching to questions
     SUPPORTED_MEDIA = [
-        "images",
+        "image",
         "audio",
-        "videos"
-        ]
+        "video"
+    ]
     
 
     # the following are important keys for the underlying dict that
@@ -173,9 +173,6 @@ class SurveyElement(object):
         if type(self.get_label())==dict:
             d = self.get_translation_keys()
             return node(u"label", ref="jr:itext('%s')" % d[u"label"])
-        elif type(self.get_media())==dict:
-            d = self.get_media_keys()
-            return node(u"label", ref="jr:itext('%s')" %  d[u"media"])
         else:
             return node(u"label", self.get_label())
 

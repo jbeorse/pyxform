@@ -87,7 +87,6 @@ class Survey(Section):
             
         The following cases are not yet covered:
             -Media files exist and no label is provided at all
-            -Media translations exist and no label translations exist (is this valid? Do we need to support it?)
         """
         translationsExist = self._translations
         if not translationsExist:
@@ -116,6 +115,7 @@ class Survey(Section):
                         
                         for lang in langs:
                             if media_type_to_store in SurveyElement.SUPPORTED_MEDIA:
+                                
                                 #Find the translation node we will be adding to
                                 translation_key = media_key.partition(":")[0] + ":label"
                                 
@@ -145,6 +145,10 @@ class Survey(Section):
                     for media_type in self._translations[lang][label_name]:
                         if media_type == "long":
                             itext_nodes.append(node("value", self._translations[lang][label_name][media_type], form=media_type))
+                        elif media_type == "image":
+                            itext_nodes.append(node("value", "jr://images/" + self._translations[lang][label_name][media_type], form=media_type))
+                        elif media_type == "video":
+                            itext_nodes.append(node("value", "jr://videos/" + self._translations[lang][label_name][media_type], form=media_type))
                         else:
                             itext_nodes.append(node("value", "jr://" + media_type + "/" + self._translations[lang][label_name][media_type], form=media_type))
                 else:
