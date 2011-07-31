@@ -16,7 +16,6 @@ class SurveyElement(object):
         "audio",
         "video"
     ]
-    
 
     # the following are important keys for the underlying dict that
     # describes this survey element
