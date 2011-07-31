@@ -69,12 +69,14 @@ class Survey(Section):
                         if key == "label":
                             key = "long"
 
-                        if translation_key in self._translations[lang] and key in self._translations[lang][translation_key]:
-                            assert self._translations[lang][translation_key] == text[lang], "The labels for this translation key are inconsistent %(key)s %(label)s" % {"key" : translation_key, "label" : text[lang]}
                         if translation_key in self._translations[lang]:
                             self._translations[lang][translation_key][key] = text[lang]
                         else:
                             self._translations[lang][translation_key] = {key: text[lang]}
+                            
+                            if key == "hint" and type(e.to_dict()[u"label"]) != dict:
+                                translation_label = e.to_dict()[u"label"]
+                                self._translations[lang][translation_key]["long"] = translation_label
                             
     def _setup_media_translations(self):
         """
