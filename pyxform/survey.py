@@ -45,7 +45,7 @@ class Survey(Section):
 
     def xml_model(self):
         self._setup_translations()
-        self._setup_media()
+        self._setup_media_translations()
         if self._translations:
             return node("model",
                         self.xml_translations_and_media(),
@@ -62,16 +62,21 @@ class Survey(Section):
         for e in self.iter_children():
             translation_keys = e.get_translation_keys()
             for key in translation_keys.keys():
-                translation_key = translation_keys[key]
+                translation_key = translation_keys[key].partition(":")[0]
                 text = e.get(key)
                 if type(text)==dict:
                     for lang in text.keys():
-                        if translation_key in self._translations[lang]:
+                        if key == "label":
+                            key = "long"
+
+                        if translation_key in self._translations[lang] and key in self._translations[lang][translation_key]:
                             assert self._translations[lang][translation_key] == text[lang], "The labels for this translation key are inconsistent %(key)s %(label)s" % {"key" : translation_key, "label" : text[lang]}
+                        if translation_key in self._translations[lang]:
+                            self._translations[lang][translation_key][key] = text[lang]
                         else:
-                            self._translations[lang][translation_key] = text[lang]
+                            self._translations[lang][translation_key] = {key: text[lang]}
                             
-    def _setup_media(self):
+    def _setup_media_translations(self):
         """
         Merges any media files in with the translations so that they all end up in the itext node. This method is handles the following cases:
             -Media files exist and no label translations exist
@@ -110,7 +115,7 @@ class Survey(Section):
                             if media_type_to_store in SurveyElement.SUPPORTED_MEDIA:
                                 
                                 #Find the translation node we will be adding to
-                                translation_key = media_key.partition(":")[0] + ":label"
+                                translation_key = media_key.partition(":")[0]
                                 
                                 if not translationsExist:
                                     #If there are no translations specified, pull the generic label
@@ -125,7 +130,7 @@ class Survey(Section):
                                 self._translations[lang][translation_key][media_type_to_store]= text[media_type]
                             
                             else:
-                                raise Exception("Media type: " + media_type_to_store + " not supported")        
+                                raise Exception("Media type: " + media_type_to_store + " not supported")      
     
     def xml_translations_and_media(self):
         result = []
@@ -136,7 +141,7 @@ class Survey(Section):
                 
                 if type(self._translations[lang][label_name]) == dict:
                     for media_type in self._translations[lang][label_name]:
-                        if media_type == "long":
+                        if media_type == "long" or media_type == "hint":
                             itext_nodes.append(node("value", self._translations[lang][label_name][media_type], form=media_type))
                         elif media_type == "image":
                             itext_nodes.append(node("value", "jr://images/" + self._translations[lang][label_name][media_type], form=media_type))
