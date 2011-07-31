@@ -24,8 +24,12 @@ LIST_NAME = u"list name"
 DICT_CHAR = u":"
 
 TYPE = u"type"
+NAME = u"name"
 CHOICES = u"choices"
 COLUMNS = u"columns"
+
+SET_TITLE = u"set form title"
+SET_ID = u"set form id"
 
 class ExcelReader(object):
     def __init__(self, path):
@@ -35,6 +39,8 @@ class ExcelReader(object):
         assert extension==".xls", "path must end with .xls"
         self._path = path
         self._name = unicode(shortname)
+        self._title = unicode(shortname)
+        self._id = unicode(shortname)
         self._parse_xls()
 
     def _parse_xls(self):
@@ -145,8 +151,20 @@ class SurveyReader(ExcelReader):
 
         let's make it a requirement that list-names have no spaces
         """
+        to_remove = []
         for q in self._dict[SURVEY_SHEET]:
             if TYPE not in q: raise Exception("Did not specify question type", q)
+            
+            if q[TYPE] == SET_TITLE:
+                self._title = q[NAME]
+                to_remove.append(q)
+                continue
+                
+            if q[TYPE] == SET_ID:
+                self._id = q[NAME]
+                to_remove.append(q)
+                continue
+            
             question_type = q[TYPE]
             question_type.strip()
             re.sub(r"\s+", " ", question_type)
@@ -154,6 +172,9 @@ class SurveyReader(ExcelReader):
                 self._prepare_multiple_choice_question(q, question_type)
             if question_type.startswith(u"begin loop"):
                 self._prepare_begin_loop(q, question_type)
+
+        for q in to_remove:
+          self._dict[SURVEY_SHEET].remove(q)
 
     def _prepare_multiple_choice_question(self, q, question_type):
         m = re.search(r"^(?P<select_command>select one|select all that apply) from (?P<list_name>\S+)( (?P<specify_other>or specify other))?$", question_type)

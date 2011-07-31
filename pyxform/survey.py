@@ -26,6 +26,7 @@ class Survey(Section):
         self._parent = None
         self._created = datetime.now()
         self._id_string = kwargs.get(u'id_string')
+        self._title = kwargs.get(u'title')
 
     def xml(self):
         """
@@ -35,20 +36,12 @@ class Survey(Section):
         self._setup_xpath_dictionary()
         return node(u"h:html",
                     node(u"h:head",
-                         node(u"h:title", self.get_name()),
+                         node(u"h:title", self.title()),
                          self.xml_model()
                         ),
                     node(u"h:body", *self.xml_control()),
                     **nsmap
                     )
-        
-        # return E(ns("h", "html"),
-        #          E(ns("h", "head"),
-        #            E(ns("h", "title"), self.get_name()),
-        #            self.xml_model()
-        #            ),
-        #          E(ns("h", "body"), *self.xml_control())
-        #          )
 
     def xml_model(self):
         self._setup_translations()
@@ -164,10 +157,18 @@ class Survey(Section):
     def set_id_string(self, id_string):
         self._id_string = id_string
 
+    def set_title(self, title):
+        self._title = title
+
     def id_string(self):
         if self._id_string is None:
-            self._id_string = self.get_name() + "_" + self.date_stamp()
+            self._id_string = self.get_name()
         return self._id_string
+
+    def title(self):
+        if self._title is None:
+            self._title = self.get_name()
+        return self._title
 
     def xml_instance(self):
         result = Section.xml_instance(self)
@@ -213,7 +214,7 @@ class Survey(Section):
         return re.sub(bracketed_tag, self._var_repl_function(), text)
 
     def print_xform_to_file(self, path="", validate=True):
-        if not path: path = self.id_string() + ".xml"
+        if not path: path = self.get_name() + ".xml"
         fp = codecs.open(path, mode="w", encoding="utf-8")
         fp.write(self._to_xml())
         fp.close()
