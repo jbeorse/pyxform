@@ -140,8 +140,6 @@ class Survey(Section):
                             itext_nodes.append(node("value", self._translations[lang][label_name][media_type], form=media_type))
                         elif media_type == "image":
                             itext_nodes.append(node("value", "jr://images/" + self._translations[lang][label_name][media_type], form=media_type))
-                        elif media_type == "video":
-                            itext_nodes.append(node("value", "jr://videos/" + self._translations[lang][label_name][media_type], form=media_type))
                         else:
                             itext_nodes.append(node("value", "jr://" + media_type + "/" + self._translations[lang][label_name][media_type], form=media_type))
                 else:
@@ -180,7 +178,13 @@ class Survey(Section):
         I want the to_xml method to by default validate the xml we are
         producing.
         """
-        return self.xml().toxml()
+
+        #Hacky way of pretty printing xml without adding extra white space to text
+        xml_with_linebreaks = self.xml().toprettyxml(indent='  ')
+        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)    
+        prettyXml = text_re.sub('>\g<1></', xml_with_linebreaks)
+        
+        return prettyXml
     
     def __unicode__(self):
         return "<survey name='%s' element_count='%s'>" % (self.get_name(), len(self._children))
