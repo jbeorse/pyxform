@@ -111,10 +111,14 @@ class Survey(Section):
                                 
                                 #Find the translation node we will be adding to
                                 translation_key = media_key.partition(":")[0] + ":label"
-                                
+
                                 if not translationsExist:
                                     #If there are no translations specified, pull the generic label
                                     translation_label = e.to_dict()[u"label"]
+                                    e.set(u"label", {lang: translation_label})
+                                elif translation_key not in self._translations[lang]:
+                                    translation_label = e.to_dict()[u"label"]
+                                    e.set(u"label", {lang: translation_label})
                                 else:
                                     translation_label = self._translations[lang][translation_key]
                                 
@@ -133,8 +137,9 @@ class Survey(Section):
             result.append(node("translation", lang=lang))
             for label_name in self._translations[lang].keys():
                 itext_nodes = []
+                label_type = label_name.partition(":")[-1]
                 
-                if type(self._translations[lang][label_name]) == dict:
+                if type(self._translations[lang][label_name]) == dict and label_type == "label":
                     for media_type in self._translations[lang][label_name]:
                         if media_type == "long":
                             itext_nodes.append(node("value", self._translations[lang][label_name][media_type], form=media_type))
@@ -143,7 +148,7 @@ class Survey(Section):
                         else:
                             itext_nodes.append(node("value", "jr://" + media_type + "/" + self._translations[lang][label_name][media_type], form=media_type))
                 else:
-                    itext_nodes.append(node("value", self._translations[lang][label_name], form="long"))
+                    itext_nodes.append(node("value", self._translations[lang][label_name]))
 
                 result[-1].appendChild(node("text", *itext_nodes, id=label_name))
         return node("itext", *result)
