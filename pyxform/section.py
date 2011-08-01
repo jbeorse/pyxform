@@ -21,7 +21,11 @@ class Section(SurveyElement):
             element_slugs.append(element.get_name())
 
     def xml_instance(self):
-        result = node(self.get_name())
+        if type(self) == RepeatingSection:
+            kwargs = {"jr:template": ""}
+        else:
+            kwargs = {}
+        result = node(self.get_name(), **kwargs)
         for child in self._children:
             result.appendChild(child.xml_instance())
         return result
