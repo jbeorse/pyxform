@@ -28,6 +28,7 @@ NAME = u"name"
 CHOICES = u"choices"
 COLUMNS = u"columns"
 
+#Special reserved values for type column that allow the user to set the form's title or id
 SET_TITLE = u"set form title"
 SET_ID = u"set form id"
 

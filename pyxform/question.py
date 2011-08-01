@@ -38,20 +38,36 @@ class InputQuestion(Question):
     dates, geopoints, barcodes ...
     """
     def xml_control(self):
-        return node(u"input", ref=self.get_xpath(), *self.xml_label_and_hint())
-
+        control_dict = self.get_control()
+        if u"appearance" in control_dict:
+            return node(u"input", ref=self.get_xpath(), 
+                appearance=control_dict[u"appearance"], 
+                *self.xml_label_and_hint()
+                )
+        else:
+            return node(u"input", *self.xml_label_and_hint())
 
 class UploadQuestion(Question):
     def _get_media_type(self):
         return self.get_control()[u"mediatype"]
         
     def xml_control(self):
-        return node(
-            u"upload",
-            ref=self.get_xpath(),
-            mediatype=self._get_media_type(),
-            *self.xml_label_and_hint()
-            )
+        control_dict = self.get_control()
+        if u"appearance" in control_dict:
+            return node(
+                u"upload",
+                ref=self.get_xpath(),
+                mediatype=self._get_media_type(),
+                appearance=control_dict[u"appearance"],
+                *self.xml_label_and_hint()
+                )
+        else:
+            return node(
+                u"upload",
+                ref=self.get_xpath(),
+                mediatype=self._get_media_type(),
+                *self.xml_label_and_hint()
+                )
 
 
 class Option(SurveyElement):
@@ -106,10 +122,19 @@ class MultipleChoiceQuestion(Question):
 
     def xml_control(self):
         assert self.get_bind()[u"type"] in [u"select", u"select1"]
-        result = node(
-            self.get_bind()[u"type"],
-            ref=self.get_xpath()
-            )
+
+        control_dict = self.get_control()
+        if u"appearance" in control_dict:
+            result = node(
+                self.get_bind()[u"type"],
+                ref=self.get_xpath(),
+                appearance=control_dict[u"appearance"]
+                )
+        else:
+            result = node(
+                self.get_bind()[u"type"],
+                ref=self.get_xpath()
+                )
         for n in self.xml_label_and_hint():
             result.appendChild(n)
         for n in [o.xml() for o in self._children]:
