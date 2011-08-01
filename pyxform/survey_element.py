@@ -169,7 +169,9 @@ class SurveyElement(object):
     
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
-        if type(self.get_label())==dict:
+        if not self.get_label():
+            raise Exception(self.get_name(), "Must include a label") 
+        elif type(self.get_label())==dict:
             d = self.get_translation_keys()
             return node(u"label", ref="jr:itext('%s')" % d[u"label"])
         else:

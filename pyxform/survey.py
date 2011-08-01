@@ -114,11 +114,17 @@ class Survey(Section):
 
                                 if not translationsExist:
                                     #If there are no translations specified, pull the generic label
-                                    translation_label = e.to_dict()[u"label"]
-                                    e.set(u"label", {lang: translation_label})
+                                    if u"label" in e.to_dict():
+                                        translation_label = e.to_dict()[u"label"]
+                                        e.set(u"label", {lang: translation_label})
+                                    else:
+                                        raise Exception(e.get_name(), "Must include a label")
                                 elif translation_key not in self._translations[lang]:
-                                    translation_label = e.to_dict()[u"label"]
-                                    e.set(u"label", {lang: translation_label})
+                                    if u"label" in e.to_dict():
+                                        translation_label = e.to_dict()[u"label"]
+                                        e.set(u"label", {lang: translation_label})
+                                    else:
+                                        raise Exception(e.get_name(), "Must include a label")
                                 else:
                                     translation_label = self._translations[lang][translation_key]
                                 
