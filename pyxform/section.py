@@ -49,7 +49,14 @@ class RepeatingSection(Section):
         </repeat>
         </group>
         """
-        repeat_node = node(u"repeat", nodeset=self.get_xpath())
+        control_dict = self.get_control()
+        if u"appearance" in control_dict:
+            repeat_node = node(u"repeat", 
+            nodeset=self.get_xpath(),
+            appearance=control_dict[u"appearance"]
+            )
+        else:
+            repeat_node = node(u"repeat", nodeset=self.get_xpath())
         for n in Section.xml_control(self):
             repeat_node.appendChild(n)
         return node(
@@ -60,7 +67,15 @@ class RepeatingSection(Section):
 
 class GroupedSection(Section):
     def xml_control(self):
-        group_node = node(u"group", self.xml_label(), nodeset=self.get_xpath())
+        control_dict = self.get_control()
+        if u"appearance" in control_dict:
+            group_node = node(u"group",
+                 self.xml_label(), 
+                 nodeset=self.get_xpath(), 
+                 appearance=control_dict[u"appearance"]
+                 )
+        else:
+            group_node = node(u"group", self.xml_label(), nodeset=self.get_xpath())
         for n in Section.xml_control(self):
             group_node.appendChild(n)
         return group_node

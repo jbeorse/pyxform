@@ -45,7 +45,10 @@ class InputQuestion(Question):
                 *self.xml_label_and_hint()
                 )
         else:
-            return node(u"input", *self.xml_label_and_hint())
+            return node(u"input",
+                ref=self.get_xpath(),
+                *self.xml_label_and_hint()
+                )
 
 class UploadQuestion(Question):
     def _get_media_type(self):
