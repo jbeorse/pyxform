@@ -22,6 +22,7 @@ class SurveyElement(object):
     NAME = u"name"
     LABEL = u"label"
     HINT = u"hint"
+    DEFAULT = u"default"
     TYPE = u"type"
     BIND = u"bind"
     CONTROL = u"control"
@@ -35,6 +36,7 @@ class SurveyElement(object):
         NAME : u"",
         LABEL : {},
         HINT : {},
+        DEFAULT : {},
         TYPE : u"",
         BIND : {},
         CONTROL : {},
@@ -85,7 +87,7 @@ class SurveyElement(object):
         return self._children
 
     def get(self, key):
-        # name, type, control, bind, label, hint
+        # name, type, control, bind, label, hint, default
         return self._dict[key]
 
     def set(self, key, value):

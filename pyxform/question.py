@@ -26,6 +26,9 @@ class Question(SurveyElement):
         return _overlay(over, under)
 
     def xml_instance(self):
+    
+        if self.get(u"default"):
+            return node(self.get_name(), unicode(self.get(u"default")))
         return node(self.get_name())
         
     def xml_control(self):
