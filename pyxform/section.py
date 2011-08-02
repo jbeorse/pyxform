@@ -25,9 +25,18 @@ class Section(SurveyElement):
             kwargs = {"jr:template": ""}
         else:
             kwargs = {}
-        result = node(self.get_name(), **kwargs)
+
+        result = None
+
+        if not self.get(u"type") == u"group":
+            result = node(self.get_name(), **kwargs)
+        #print self.get_name()
+        #print self.get(u"type")
         for child in self._children:
-            result.appendChild(child.xml_instance())
+            if not result:
+                result = child.xml_instance()
+            else:
+                result.appendChild(child.xml_instance())
         return result
 
     def xml_control(self):
@@ -68,6 +77,28 @@ class RepeatingSection(Section):
             self.xml_label(),
             repeat_node
             )
+
+class LogicalGroupedSection(Section):
+    def xml_control(self):
+        control_dict = self.get_control()
+        if u"appearance" in control_dict:
+            group_node = node(u"group",
+                 self.xml_label(), 
+                 nodeset=self.get_xpath(), 
+                 appearance=control_dict[u"appearance"]
+                 )
+        else:
+            group_node = node(u"group", self.xml_label(), nodeset=self.get_xpath())
+        for n in Section.xml_control(self):
+            group_node.appendChild(n)
+        return group_node
+
+    def to_dict(self):
+        # This is quite hacky, might want to think about a smart way
+        # to approach this problem.
+        result = super(GroupedSection, self).to_dict()
+        result[u"type"] = u"lgroup"
+        return result
 
 class GroupedSection(Section):
     def xml_control(self):

@@ -245,8 +245,8 @@ class SurveyReader(ExcelReader):
         stack = [result]
         for cmd in self._dict:
             cmd_type = cmd[u"type"]
-            match_begin = re.match(r"begin (?P<type>group|repeat|loop)", cmd_type)
-            match_end = re.match(r"end (?P<type>group|repeat|loop)", cmd_type)
+            match_begin = re.match(r"begin (?P<type>lgroup|group|repeat|loop)", cmd_type)
+            match_end = re.match(r"end (?P<type>lgroup|group|repeat|loop)", cmd_type)
             if match_begin:
                 # start a new section
                 cmd[u"type"] = match_begin.group(1)
