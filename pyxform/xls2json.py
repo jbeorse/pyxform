@@ -178,10 +178,20 @@ class SurveyReader(ExcelReader):
           self._dict[SURVEY_SHEET].remove(q)
 
     def _prepare_multiple_choice_question(self, q, question_type):
-        m = re.search(r"^(?P<select_command>select one|select all that apply) from (?P<list_name>\S+)( (?P<specify_other>or specify other))?$", question_type)
-        assert m, "unsupported select syntax:" + question_type
+        d = {}
+        if question_type.endswith(" or specify other"):
+            d["specify_other"] = " or specify other"
+            question_type = question_type[0:question_type.rfind(" or specify other")-1]
+        else:
+            d["specify_other"] = None
+        question_components = question_type.rpartition(" ")
+        assert question_components[0], "must specify a list name: " + question_type
+        
+        d["select_command"] = question_components[0] 
+        d["list_name"] = question_components[2]
+
         assert CHOICES not in q
-        d = m.groupdict()
+
         q[CHOICES] = d["list_name"]
         if d["specify_other"]:
             q[TYPE] = " ".join([d["select_command"], d["specify_other"]])
