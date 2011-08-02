@@ -1,5 +1,5 @@
 from survey_element import SurveyElement
-from question import Question, InputQuestion, UploadQuestion, MultipleChoiceQuestion
+from question import Question, InputQuestion, TriggerQuestion, UploadQuestion, MultipleChoiceQuestion
 from section import Section, RepeatingSection, GroupedSection
 from survey import Survey
 import utils
@@ -13,6 +13,7 @@ class SurveyElementBuilder(object):
     QUESTION_CLASSES = {
         u"" : Question,
         u"input" : InputQuestion,
+        u"trigger" : TriggerQuestion,
         u"select" : MultipleChoiceQuestion,
         u"select1" : MultipleChoiceQuestion,
         u"upload" : UploadQuestion,

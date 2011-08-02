@@ -53,6 +53,21 @@ class InputQuestion(Question):
                 *self.xml_label_and_hint()
                 )
 
+class TriggerQuestion(Question):
+
+    def xml_control(self):
+        control_dict = self.get_control()
+        if u"appearance" in control_dict:
+            return node(u"trigger", ref=self.get_xpath(), 
+                appearance=control_dict[u"appearance"], 
+                *self.xml_label_and_hint()
+                )
+        else:
+            return node(u"trigger",
+                ref=self.get_xpath(),
+                *self.xml_label_and_hint()
+                )
+
 class UploadQuestion(Question):
     def _get_media_type(self):
         return self.get_control()[u"mediatype"]
