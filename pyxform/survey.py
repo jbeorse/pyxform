@@ -228,6 +228,22 @@ class Survey(Section):
         bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
         return re.sub(bracketed_tag, self._var_repl_function(), text)
 
+    def _var_repl_output_function(self):
+        """
+        Given a dictionary of xpaths, return a function we can use to
+        replace ${varname} with the xpath to varname.
+        """
+        def repl(matchobj):
+            if matchobj.group(1) not in self._xpath:
+                raise Exception("There is no survey element with this name.",
+                                matchobj.group(1))
+            return '<output value="' + self._xpath[matchobj.group(1)] + '" />'
+        return repl
+
+    def insert_output_values(self, text):
+        bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
+        return re.sub(bracketed_tag, self._var_repl_output_function(), text)
+
     def print_xform_to_file(self, path="", validate=True):
         if not path: path = self.get_name() + ".xml"
         fp = codecs.open(path, mode="w", encoding="utf-8")

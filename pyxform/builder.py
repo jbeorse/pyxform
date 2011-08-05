@@ -1,6 +1,6 @@
 from survey_element import SurveyElement
 from question import Question, InputQuestion, TriggerQuestion, UploadQuestion, MultipleChoiceQuestion
-from section import Section, RepeatingSection, GroupedSection, LogicalGroupedSection
+from section import Section, RepeatingSection, GroupedSection
 from survey import Survey
 import utils
 from xls2json import SurveyReader
@@ -20,7 +20,6 @@ class SurveyElementBuilder(object):
         }
 
     SECTION_CLASSES = {
-        u"lgroup" : LogicalGroupedSection,
         u"group" : GroupedSection,
         u"repeat" : RepeatingSection,
         u"survey" : Survey,

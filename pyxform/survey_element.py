@@ -119,7 +119,8 @@ class SurveyElement(object):
         current_element = self
         while current_element._parent:
             current_element = current_element._parent
-            result = [current_element] + result
+            if not current_element.get(u"type") == u"group":
+                result = [current_element] + result
         return result
 
     def get_root(self):
@@ -171,9 +172,10 @@ class SurveyElement(object):
     
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
-        if not self.get_label():
+        if not self.get_label() and not self.get(u"type") == "group":
             raise Exception(self.get_name(), "Must include a label") 
-        elif type(self.get_label())==dict:
+            
+        if type(self.get_label())==dict:
             d = self.get_translation_keys()
             return node(u"label", ref="jr:itext('%s')" % d[u"label"])
         else:

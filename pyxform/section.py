@@ -78,39 +78,26 @@ class RepeatingSection(Section):
             repeat_node
             )
 
-class LogicalGroupedSection(Section):
-    def xml_control(self):
-        control_dict = self.get_control()
-        if u"appearance" in control_dict:
-            group_node = node(u"group",
-                 self.xml_label(), 
-                 nodeset=self.get_xpath(), 
-                 appearance=control_dict[u"appearance"]
-                 )
-        else:
-            group_node = node(u"group", self.xml_label(), nodeset=self.get_xpath())
-        for n in Section.xml_control(self):
-            group_node.appendChild(n)
-        return group_node
-
-    def to_dict(self):
-        # This is quite hacky, might want to think about a smart way
-        # to approach this problem.
-        result = super(GroupedSection, self).to_dict()
-        result[u"type"] = u"lgroup"
-        return result
-
 class GroupedSection(Section):
     def xml_control(self):
         control_dict = self.get_control()
-        if u"appearance" in control_dict:
+        xml_label = self.xml_label()
+        
+        if u"appearance" in control_dict and xml_label:
             group_node = node(u"group",
                  self.xml_label(), 
                  nodeset=self.get_xpath(), 
                  appearance=control_dict[u"appearance"]
                  )
-        else:
+        elif u"appearance" in control_dict and not xml_label:
+            group_node = node(u"group",
+                 nodeset=self.get_xpath(), 
+                 appearance=control_dict[u"appearance"]
+                 )
+        elif not u"appearance" in control_dict and xml_label:
             group_node = node(u"group", self.xml_label(), nodeset=self.get_xpath())
+        else:
+            group_node = node(u"group", nodeset=self.get_xpath())
         for n in Section.xml_control(self):
             group_node.appendChild(n)
         return group_node
