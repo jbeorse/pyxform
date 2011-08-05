@@ -185,11 +185,15 @@ class SurveyReader(ExcelReader):
             if TYPE not in q: raise Exception("Did not specify question type", q)
             
             if q[TYPE] == SET_TITLE:
+                if not q[NAME].strip().find(" ") == -1:
+                    raise Exception("Form title must not include any spaces", q[NAME])
                 self._title = q[NAME]
                 to_remove.append(q)
                 continue
                 
             if q[TYPE] == SET_ID:
+                if not q[NAME].strip().find(" ") == -1:
+                    raise Exception("Form id must not include any spaces", q[NAME])
                 self._id = q[NAME]
                 to_remove.append(q)
                 continue
