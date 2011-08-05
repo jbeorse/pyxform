@@ -29,7 +29,7 @@ class Section(SurveyElement):
         result = None
 
         if not self.get(u"type") == u"group":
-            result = node(self.get_name(), **kwargs)
+            result = node("Data", **kwargs)
         #print self.get_name()
         #print self.get(u"type")
         for child in self._children:
