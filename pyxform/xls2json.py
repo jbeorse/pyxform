@@ -32,6 +32,23 @@ COLUMNS = u"columns"
 SET_TITLE = u"set form title"
 SET_ID = u"set form id"
 
+#Conversion dictionary from user friendly column names to meaningful values
+col_name_conversions = {
+    "caption" : u"label",
+    "appearance" : u"control:appearance",
+    "relevance" : u"bind:relevant",
+    "required" : u"bind:required",
+    "read only" : u"bind:readonly",
+    "constraint" : u"bind:constraint",
+    "constraing message" : u"bind:jr:constraintMsg",
+    "calculation" : u"bind:calculate"
+}
+
+value_conversions = {
+    "yes": u"true()",
+    "no": u"false()"
+}
+
 class ExcelReader(object):
     def __init__(self, path):
         assert isinstance(path, basestring), "path must be a string"
@@ -68,8 +85,19 @@ class ExcelReader(object):
                 row_dict = {}
                 for column in range(0,sheet.ncols):
                     key = sheet.cell(0,column).value
+
+                    #Convert key from ui friendly to meaningful
+                    if key in col_name_conversions:
+                        key = col_name_conversions[key]
+                    #Special case for converting captions because they have languages
+                    key = key.replace("caption", "label")
+                    
                     value = sheet.cell(row,column).value
                     if value is not None and value!="": row_dict[key] = value
+                    #Convert yes and no to true() and false()
+                    if value in value_conversions:
+                        value = value_conversions[value]
+                        
                 if row_dict: self._dict[sheet.name].append(row_dict)
 
     def _set_choices_and_columns_sheet_name(self):
@@ -169,7 +197,7 @@ class SurveyReader(ExcelReader):
             question_type = q[TYPE]
             question_type.strip()
             re.sub(r"\s+", " ", question_type)
-            if question_type.startswith(u"select"):
+            if question_type.startswith(u"add select"):
                 self._prepare_multiple_choice_question(q, question_type)
             if question_type.startswith(u"begin loop"):
                 self._prepare_begin_loop(q, question_type)

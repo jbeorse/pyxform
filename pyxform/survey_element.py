@@ -24,6 +24,7 @@ class SurveyElement(object):
     HINT = u"hint"
     DEFAULT = u"default"
     TYPE = u"type"
+    APPEARANCE = u"appearance"
     BIND = u"bind"
     CONTROL = u"control"
     MEDIA = u"media"

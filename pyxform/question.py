@@ -42,9 +42,9 @@ class InputQuestion(Question):
     """
     def xml_control(self):
         control_dict = self.get_control()
-        if u"appearance" in control_dict:
+        if self.APPEARANCE in control_dict:
             return node(u"input", ref=self.get_xpath(), 
-                appearance=control_dict[u"appearance"], 
+                appearance=control_dict[self.APPEARANCE], 
                 *self.xml_label_and_hint()
                 )
         else:
@@ -57,9 +57,9 @@ class TriggerQuestion(Question):
 
     def xml_control(self):
         control_dict = self.get_control()
-        if u"appearance" in control_dict:
+        if self.APPEARANCE in control_dict:
             return node(u"trigger", ref=self.get_xpath(), 
-                appearance=control_dict[u"appearance"], 
+                appearance=control_dict[self.APPEARANCE], 
                 *self.xml_label_and_hint()
                 )
         else:
@@ -74,12 +74,12 @@ class UploadQuestion(Question):
         
     def xml_control(self):
         control_dict = self.get_control()
-        if u"appearance" in control_dict:
+        if self.APPEARANCE in control_dict:
             return node(
                 u"upload",
                 ref=self.get_xpath(),
                 mediatype=self._get_media_type(),
-                appearance=control_dict[u"appearance"],
+                appearance=control_dict[self.APPEARANCE],
                 *self.xml_label_and_hint()
                 )
         else:
@@ -142,18 +142,18 @@ class MultipleChoiceQuestion(Question):
         self.add_child(option)
 
     def xml_control(self):
-        assert self.get_bind()[u"type"] in [u"select", u"select1"]
+        assert self.get_bind()[self.TYPE] in [u"select", u"select1"]
 
         control_dict = self.get_control()
-        if u"appearance" in control_dict:
+        if self.APPEARANCE in control_dict:
             result = node(
-                self.get_bind()[u"type"],
+                self.get_bind()[self.TYPE],
                 ref=self.get_xpath(),
-                appearance=control_dict[u"appearance"]
+                appearance=control_dict[self.APPEARANCE]
                 )
         else:
             result = node(
-                self.get_bind()[u"type"],
+                self.get_bind()[self.TYPE],
                 ref=self.get_xpath()
                 )
         for n in self.xml_label_and_hint():
