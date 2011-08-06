@@ -119,6 +119,17 @@ class Survey(Section):
                                         e.set(u"label", {lang: translation_label})
                                     else:
                                         raise Exception(e.get_name(), "Must include a label")
+                                elif not langsExist:
+                                    if u"label" in e.to_dict():
+                                        translation_label = e.to_dict()[u"label"]
+                                        
+                                        if type(translation_label) == dict:
+                                            for key in translation_label:
+                                                translation_label = translation_label[key]
+                                                break
+                                        e.set(u"label", {lang: translation_label})
+                                    else:
+                                        raise Exception(e.get_name(), "Must include a label")
                                 elif translation_key not in self._translations[lang]:
                                     if u"label" in e.to_dict():
                                         translation_label = e.to_dict()[u"label"]

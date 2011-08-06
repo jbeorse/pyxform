@@ -10,6 +10,21 @@ class SurveyElement(object):
     question_type_dictionary.
     """
 
+    binding_conversions = {
+        "yes" : "true()",
+        "Yes" : "true()",
+        "YES" : "true()",
+        "true" : "true()",
+        "True" : "true()",
+        "TRUE" : "true()",
+        "no" : "false()",
+        "No" : "false()",
+        "NO" : "false()",
+        "false" : "false()",
+        "False" : "false()",
+        "FALSE" : "false()"
+    }
+
     #Supported media types for attaching to questions
     SUPPORTED_MEDIA = [
         "image",
@@ -120,8 +135,7 @@ class SurveyElement(object):
         current_element = self
         while current_element._parent:
             current_element = current_element._parent
-            if not current_element.get(u"type") == u"group":
-                result = [current_element] + result
+            result = [current_element] + result
         return result
 
     def get_root(self):
@@ -173,10 +187,12 @@ class SurveyElement(object):
     
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
-        if not self.get_label() and not self.get(u"type") == "group":
+        if not self.get_label() and not self.get(self.TYPE) == "group":
             raise Exception(self.get_name(), "Must include a label") 
             
         if type(self.get_label())==dict:
+            if len(self.get_label()) == 0 and self.get(self.TYPE) == "group":
+                return None
             d = self.get_translation_keys()
             return node(u"label", ref="jr:itext('%s')" % d[u"label"])
         else:
@@ -208,6 +224,8 @@ class SurveyElement(object):
         d = self.get_bind().copy()
         if d:
             for k, v in d.items():
+                if v in self.binding_conversions:
+                    v = self.binding_conversions[v]
                 d[k] = survey.insert_xpaths(v)
             return node(u"bind", nodeset=self.get_xpath(), **d)
         return None

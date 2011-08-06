@@ -26,17 +26,13 @@ class Section(SurveyElement):
         else:
             kwargs = {}
 
-        result = None
+        if self.get(self.TYPE) == u"survey":
+            result = node("data", **kwargs)
 
-        if not self.get(u"type") == u"group":
-            result = node("Data", **kwargs)
-        #print self.get_name()
-        #print self.get(u"type")
+        result = node(self.get_name(), **kwargs)
+            
         for child in self._children:
-            if not result:
-                result = child.xml_instance()
-            else:
-                result.appendChild(child.xml_instance())
+            result.appendChild(child.xml_instance())
         return result
 
     def xml_control(self):
@@ -75,7 +71,8 @@ class RepeatingSection(Section):
         return node(
             u"group",
             self.xml_label(),
-            repeat_node
+            repeat_node,
+            ref=self.get_xpath()
             )
 
 class GroupedSection(Section):
@@ -85,19 +82,19 @@ class GroupedSection(Section):
         
         if u"appearance" in control_dict and xml_label:
             group_node = node(u"group",
-                 self.xml_label(), 
-                 nodeset=self.get_xpath(), 
+                 xml_label, 
+                 ref=self.get_xpath(), 
                  appearance=control_dict[u"appearance"]
                  )
         elif u"appearance" in control_dict and not xml_label:
             group_node = node(u"group",
-                 nodeset=self.get_xpath(), 
+                 ref=self.get_xpath(), 
                  appearance=control_dict[u"appearance"]
                  )
         elif not u"appearance" in control_dict and xml_label:
-            group_node = node(u"group", self.xml_label(), nodeset=self.get_xpath())
+            group_node = node(u"group", self.xml_label(), ref=self.get_xpath())
         else:
-            group_node = node(u"group", nodeset=self.get_xpath())
+            group_node = node(u"group", ref=self.get_xpath())
         for n in Section.xml_control(self):
             group_node.appendChild(n)
         return group_node

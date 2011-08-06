@@ -44,9 +44,8 @@ col_name_conversions = {
     "calculation" : u"bind:calculate"
 }
 
-value_conversions = {
-    "yes": u"true()",
-    "no": u"false()"
+group_name_conversions = {
+	"looped group" : u"repeat"
 }
 
 class ExcelReader(object):
@@ -94,9 +93,6 @@ class ExcelReader(object):
                     
                     value = sheet.cell(row,column).value
                     if value is not None and value!="": row_dict[key] = value
-                    #Convert yes and no to true() and false()
-                    if value in value_conversions:
-                        value = value_conversions[value]
                         
                 if row_dict: self._dict[sheet.name].append(row_dict)
 
@@ -203,8 +199,6 @@ class SurveyReader(ExcelReader):
             re.sub(r"\s+", " ", question_type)
             if question_type.startswith(u"add select"):
                 self._prepare_multiple_choice_question(q, question_type)
-            if question_type.startswith(u"begin loop"):
-                self._prepare_begin_loop(q, question_type)
 
         for q in to_remove:
           self._dict[SURVEY_SHEET].remove(q)
@@ -229,14 +223,6 @@ class SurveyReader(ExcelReader):
             q[TYPE] = " ".join([d["select_command"], d["specify_other"]])
         else:
             q[TYPE] = d["select_command"]
-
-    def _prepare_begin_loop(self, q, question_type):
-        m = re.search(r"^(?P<type>begin loop) over (?P<list_name>\S+)$", question_type)
-        assert m, "unsupported select syntax:" + question_type
-        assert COLUMNS not in q
-        d = m.groupdict()
-        q[COLUMNS] = d["list_name"]
-        q[TYPE] = d["type"]
 
     def _construct_choice_lists(self):
         """
@@ -277,17 +263,25 @@ class SurveyReader(ExcelReader):
         stack = [result]
         for cmd in self._dict:
             cmd_type = cmd[u"type"]
-            match_begin = re.match(r"begin (?P<type>lgroup|group|repeat|loop)", cmd_type)
-            match_end = re.match(r"end (?P<type>lgroup|group|repeat|loop)", cmd_type)
+            match_begin = re.match(r"begin (?P<type>lgroup|group|looped group)", cmd_type)
+            match_end = re.match(r"end (?P<type>lgroup|group|looped group)", cmd_type)
             if match_begin:
                 # start a new section
                 cmd[u"type"] = match_begin.group(1)
+                
+                if cmd[u"type"] in group_name_conversions:
+                	cmd[u"type"] = group_name_conversions[cmd[u"type"]]
+                
                 cmd[u"children"] = []
                 stack[-1][u"children"].append(cmd)
                 stack.append(cmd)
             elif match_end:
+            	match_end = match_end.group(1)
+            	if match_end in group_name_conversions:
+                	match_end = group_name_conversions[match_end]
+            
                 begin_cmd = stack.pop()
-                if begin_cmd[u"type"] != match_end.group(1):
+                if begin_cmd[u"type"] != match_end:
                     raise Exception("This end group does not match the previous begin", cmd)
             else:
                 stack[-1][u"children"].append(cmd)
