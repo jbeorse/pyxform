@@ -178,7 +178,10 @@ class SurveyReader(ExcelReader):
         """
         to_remove = []
         for q in self._dict[SURVEY_SHEET]:
-            if TYPE not in q: raise Exception("Did not specify question type", q)
+            if TYPE not in q:
+            	#Did not specify question type: Ignore the question
+            	to_remove.append(q)
+            	continue
             
             if q[TYPE] == SET_TITLE:
                 if not q[NAME].strip().find(" ") == -1:
