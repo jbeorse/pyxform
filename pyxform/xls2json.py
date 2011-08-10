@@ -215,7 +215,6 @@ class SurveyReader(ExcelReader):
                 continue
                 
             if DISABLED in q:
-        		print 'here'
         		disabled = q["disabled"]
         		if disabled in yes_no_conversions:
         			disabled = yes_no_conversions[disabled]
