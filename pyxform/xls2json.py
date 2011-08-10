@@ -28,6 +28,8 @@ NAME = u"name"
 CHOICES = u"choices"
 COLUMNS = u"columns"
 
+DISABLED = u'disabled'
+
 #Special reserved values for type column that allow the user to set the form's title or id
 SET_TITLE = u"set form title"
 SET_ID = u"set form id"
@@ -47,6 +49,21 @@ col_name_conversions = {
 group_name_conversions = {
 	"looped group" : u"repeat"
 }
+
+yes_no_conversions = {
+        "yes" : "true()",
+        "Yes" : "true()",
+        "YES" : "true()",
+        "true" : "true()",
+        "True" : "true()",
+        "TRUE" : "true()",
+        "no" : "false()",
+        "No" : "false()",
+        "NO" : "false()",
+        "false" : "false()",
+        "False" : "false()",
+        "FALSE" : "false()"
+    }
 
 class ExcelReader(object):
     def __init__(self, path):
@@ -196,6 +213,15 @@ class SurveyReader(ExcelReader):
                 self._id = q[NAME]
                 to_remove.append(q)
                 continue
+                
+            if DISABLED in q:
+        		print 'here'
+        		disabled = q["disabled"]
+        		if disabled in yes_no_conversions:
+        			disabled = yes_no_conversions[disabled]
+        		if disabled == 'true()':
+        			to_remove.append(q)
+        		continue
             
             question_type = q[TYPE]
             question_type.strip()
