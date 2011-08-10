@@ -21,14 +21,15 @@ def node(tag, *args, **kwargs):
     
     parsedString = False
     for k, v in kwargs.iteritems():
-    	if k == 'toParseString' and v == True and len(unicode_args) == 1:
-    		parsedString = True
-    		s = u'<?xml version="1.0" ?><'+tag+'>' + unicode_args[0] + u'</'+tag+'>'
-    		result.appendChild(parseString(s.encode("utf-8")).documentElement)
+    	if k == 'toParseString':
+    		if v == True and len(unicode_args) == 1:
+    			parsedString = True
+    			s = u'<?xml version="1.0" ?><'+tag+'>' + unicode_args[0] + u'</'+tag+'>'
+    			result.appendChild(parseString(s.encode("utf-8")).documentElement)
     	else:
         	result.setAttribute(k, v)
     
-    if len(unicode_args)==1 and not parseString:
+    if len(unicode_args)==1 and not parsedString:
         text_node = Text()
         text_node.data = unicode_args[0]
         result.appendChild(text_node)
