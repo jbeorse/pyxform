@@ -196,16 +196,16 @@ class SurveyElement(object):
             d = self.get_translation_keys()
             return node(u"label", ref="jr:itext('%s')" % d[u"label"])
         else:
-            #label = self.get_root().insert_output_values(self.get_label())
-            return node(u"label", self.get_label())
+            label, outputInserted = self.get_root().insert_output_values(self.get_label())
+            return node(u"label", label, toParseString=outputInserted)
 
     def xml_hint(self):
         if type(self.get_hint())==dict:
             d = self.get_translation_keys()
             return node(u"hint", ref="jr:itext('%s')" % d[u"hint"])
         else:
-            #hint = self.get_root().insert_output_values(self.get_hint())
-            return node(u"hint", self.get_hint())
+            hint, outputInserted = self.get_root().insert_output_values(self.get_hint())
+            return node(u"hint", hint, toParseString=outputInserted)
 
     def xml_label_and_hint(self):
         """

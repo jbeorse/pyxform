@@ -253,7 +253,8 @@ class Survey(Section):
 
     def insert_output_values(self, text):
         bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
-        return re.sub(bracketed_tag, self._var_repl_output_function(), text)
+        result = re.sub(bracketed_tag, self._var_repl_output_function(), text)
+        return result, not result == text
 
     def print_xform_to_file(self, path="", validate=True):
         if not path: path = self.get_name() + ".xml"
