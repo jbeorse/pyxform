@@ -25,7 +25,12 @@ def node(tag, *args, **kwargs):
     		if v == True and len(unicode_args) == 1:
     			parsedString = True
     			s = u'<?xml version="1.0" ?><'+tag+'>' + unicode_args[0] + u'</'+tag+'>'
-    			result.appendChild(parseString(s.encode("utf-8")).documentElement)
+    			node = parseString(s.encode("utf-8")).documentElement
+    			childNodes = []
+    			for child in node.childNodes:
+    				childNodes.append(child)
+    			for child in childNodes:
+    				result.appendChild(child)
     	else:
         	result.setAttribute(k, v)
     
