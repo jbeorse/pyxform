@@ -188,7 +188,7 @@ class SurveyElement(object):
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
         if not self.get_label() and not self.get(self.TYPE) == "group"and len(self.get('media')) == 0:
-            raise Exception(self.get_name(), "Must include a label") 
+            return None
             
         if type(self.get_label())==dict or not len(self.get('media')) == 0:
             if len(self.get_label()) == 0 and self.get(self.TYPE) == "group":
@@ -212,9 +212,14 @@ class SurveyElement(object):
         Return a list containing one node for the label and if there
         is a hint one node for the hint.
         """
-        if self.get_hint():
-            return [self.xml_label(), self.xml_hint()]
-        return [self.xml_label()]
+        if self.get_label() and self.get_hint():
+        	return [self.xml_label(), self.xml_hint()]
+        elif self.get_label():
+        	return [self.xml_label()]
+        elif self.get_hint():
+        	return [self.xml_hint()]
+        else:
+        	return None
 
     def xml_binding(self):
         """

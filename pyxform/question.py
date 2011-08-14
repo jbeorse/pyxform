@@ -42,17 +42,26 @@ class InputQuestion(Question):
     """
     def xml_control(self):
         control_dict = self.get_control()
-        if self.APPEARANCE in control_dict:
+        label_and_hint = self.xml_label_and_hint()
+        if self.APPEARANCE in control_dict and label_and_hint:
             return node(u"input", ref=self.get_xpath(), 
                 appearance=control_dict[self.APPEARANCE], 
                 *self.xml_label_and_hint()
                 )
-        else:
+        elif not self.APPEARANCE in control_dict and label_and_hint:
             return node(u"input",
                 ref=self.get_xpath(),
                 *self.xml_label_and_hint()
                 )
-
+        elif self.APPEARANCE in control_dict and not label_and_hint:
+			return node(u"input", 
+				ref=self.get_xpath(), 
+                appearance=control_dict[self.APPEARANCE]
+                )
+        else:
+        	return node(u"input", 
+				ref=self.get_xpath()
+                )
 class TriggerQuestion(Question):
 
     def xml_control(self):
