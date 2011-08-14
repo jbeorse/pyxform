@@ -203,10 +203,12 @@ class Survey(Section):
 
         #Hacky way of pretty printing xml without adding extra white space to text
         xml_with_linebreaks = self.xml().toprettyxml(indent='  ')
-        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)    
+        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)
+        output_re = re.compile('\n.*(<output.*>)\n\s*')
         prettyXml = text_re.sub('>\g<1></', xml_with_linebreaks)
+        inlineOutput = output_re.sub('\g<1> ', prettyXml)
         
-        return prettyXml
+        return inlineOutput
     
     def __unicode__(self):
         return "<survey name='%s' element_count='%s'>" % (self.get_name(), len(self._children))
