@@ -43,7 +43,16 @@ col_name_conversions = {
     "read only" : u"bind:readonly",
     "constraint" : u"bind:constraint",
     "constraing message" : u"bind:jr:constraintMsg",
-    "calculation" : u"bind:calculate"
+    "calculation" : u"bind:calculate",
+    "command" : u"type",
+    "tag" : u"name",
+    "label" : u"caption",
+    "relevant" : u"bind:relevant",
+    "skippable" : u"required",
+    "value" : u"name",
+    "image" : u"media:image",
+    "audio" : u"media:audio",
+    "video" : u"media:video"
 }
 
 group_name_conversions = {
@@ -225,7 +234,8 @@ class SurveyReader(ExcelReader):
             question_type = q[TYPE]
             question_type.strip()
             re.sub(r"\s+", " ", question_type)
-            if question_type.startswith(u"add select"):
+            
+            if u"select" in question_type:
                 self._prepare_multiple_choice_question(q, question_type)
 
         for q in to_remove:
@@ -291,8 +301,8 @@ class SurveyReader(ExcelReader):
         stack = [result]
         for cmd in self._dict:
             cmd_type = cmd[u"type"]
-            match_begin = re.match(r"begin (?P<type>lgroup|group|looped group)", cmd_type)
-            match_end = re.match(r"end (?P<type>lgroup|group|looped group)", cmd_type)
+            match_begin = re.match(r"begin (?P<type>lgroup|group|looped group|repeat)", cmd_type)
+            match_end = re.match(r"end (?P<type>lgroup|group|looped group|repeat)", cmd_type)
             if match_begin:
                 # start a new section
                 cmd[u"type"] = match_begin.group(1)
