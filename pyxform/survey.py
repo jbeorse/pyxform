@@ -213,9 +213,9 @@ class Survey(Section):
         #Hacky way of pretty printing xml without adding extra white space to text
         xml_with_linebreaks = self.xml().toprettyxml(indent='  ')
         text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)
-        output_re = re.compile('\n.*(<output.*>)\n\s*')
+        output_re = re.compile('\n.*(<output.*>)\n(\s\s\s\s)*')
         prettyXml = text_re.sub('>\g<1></', xml_with_linebreaks)
-        inlineOutput = output_re.sub('\g<1> ', prettyXml)
+        inlineOutput = output_re.sub('\g<1>', prettyXml)
         
         return inlineOutput
     
