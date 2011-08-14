@@ -26,9 +26,9 @@ class Section(SurveyElement):
         else:
             kwargs = {}
 
-        if self.get(self.TYPE) == u"survey":
-            result = node("data", **kwargs)
-
+        #if self.get(self.TYPE) == u"survey":
+        #	result = node("data", **kwargs
+        
         result = node(self.get_name(), **kwargs)
             
         for child in self._children:

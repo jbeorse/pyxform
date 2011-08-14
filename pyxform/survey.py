@@ -27,6 +27,7 @@ class Survey(Section):
         self._created = datetime.now()
         self._id_string = kwargs.get(u'id_string')
         self._title = kwargs.get(u'title')
+        self._print_name = kwargs.get(u'print_name')
 
     def xml(self):
         """
@@ -181,6 +182,9 @@ class Survey(Section):
 
     def set_title(self, title):
         self._title = title
+        
+    def set_print_name(self, print_name):
+    	self._print_name = print_name
 
     def id_string(self):
         if self._id_string is None:
@@ -191,6 +195,9 @@ class Survey(Section):
         if self._title is None:
             self._title = self.get_name()
         return self._title
+        
+    def print_name(self):
+    	return self._print_name
 
     def xml_instance(self):
         result = Section.xml_instance(self)
@@ -261,7 +268,7 @@ class Survey(Section):
         return result, not result == text
 
     def print_xform_to_file(self, path="", validate=True):
-        if not path: path = self.get_name() + ".xml"
+        if not path: path = self._print_name + ".xml"
         fp = codecs.open(path, mode="w", encoding="utf-8")
         fp.write(self._to_xml())
         fp.close()

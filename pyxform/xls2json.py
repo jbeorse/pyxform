@@ -83,6 +83,7 @@ class ExcelReader(object):
         assert extension==".xls", "path must end with .xls"
         self._path = path
         self._name = unicode(shortname)
+        self._print_name = unicode(shortname) 
         self._title = unicode(shortname)
         self._id = unicode(shortname)
         self._parse_xls()
@@ -239,6 +240,12 @@ class SurveyReader(ExcelReader):
             if u"select" in question_type:
                 self._prepare_multiple_choice_question(q, question_type)
 
+		if not self._id.find(" ") == -1:
+			raise Exception("Form id must not include any spaces", self._id)
+		
+		if not self._name.find(" ") == -1:
+			self._name = self._id
+		
         for q in to_remove:
           self._dict[SURVEY_SHEET].remove(q)
 

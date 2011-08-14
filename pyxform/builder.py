@@ -209,9 +209,10 @@ def render_survey_package(survey_package):
     children = survey_package.get(u'survey', [])
     name = unicode(survey_package.get(u'name'))
     id_string = survey_package.get(u'id_string')
+    print_name = survey_package.get(u'print_name')
     #question_types don't work yet
     question_types = survey_package.get(u'question_types')
-    survey = Survey(id_string=id_string, name=name)
+    survey = Survey(id_string=id_string,print_name=print_name, name=name)
     builder = SurveyElementBuilder()
     for child in children:
         survey.add_child(create_survey_element_from_dict(child))
@@ -220,6 +221,7 @@ def render_survey_package(survey_package):
 def create_survey(
     name_of_main_section, sections,
     id_string=None, title=None,
+    print_name=None,
     question_type_dictionary=None
     ):
     builder = SurveyElementBuilder()
@@ -231,6 +233,7 @@ def create_survey(
         )
     survey.set_id_string(id_string)
     survey.set_title(title)
+    survey.set_print_name(print_name)
     return survey
 
 def section_name(path_or_file_name):
@@ -254,6 +257,7 @@ def create_survey_from_path(path):
         "name_of_main_section" : section_name(file_name),
         "sections" : sections,
         "id_string" : excel_reader._id,
-        "title" : excel_reader._title
+        "title" : excel_reader._title,
+        "print_name" : excel_reader._print_name
         }
     return create_survey(**kwargs)
