@@ -52,7 +52,8 @@ col_name_conversions = {
     "value" : u"name",
     "image" : u"media:image",
     "audio" : u"media:audio",
-    "video" : u"media:video"
+    "video" : u"media:video",
+    "count" : u"bind:jr:count"
 }
 
 group_name_conversions = {

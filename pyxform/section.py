@@ -68,12 +68,11 @@ class RepeatingSection(Section):
             repeat_node = node(u"repeat", nodeset=self.get_xpath())
         for n in Section.xml_control(self):
             repeat_node.appendChild(n)
-        return node(
-            u"group",
-            self.xml_label(),
-            repeat_node,
-            ref=self.get_xpath()
-            )
+            
+    	label = self.xml_label()
+    	if label:
+    		return node(u"group",self.xml_label(),repeat_node,ref=self.get_xpath())
+		return node(u"group",repeat_node,ref=self.get_xpath())
 
 class GroupedSection(Section):
     def xml_control(self):
