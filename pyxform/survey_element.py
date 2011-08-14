@@ -187,10 +187,10 @@ class SurveyElement(object):
     
     # XML generating functions, these probably need to be moved around.
     def xml_label(self):
-        if not self.get_label() and not self.get(self.TYPE) == "group":
+        if not self.get_label() and not self.get(self.TYPE) == "group"and len(self.get('media')) == 0:
             raise Exception(self.get_name(), "Must include a label") 
             
-        if type(self.get_label())==dict:
+        if type(self.get_label())==dict or not len(self.get('media')) == 0:
             if len(self.get_label()) == 0 and self.get(self.TYPE) == "group":
                 return None
             d = self.get_translation_keys()

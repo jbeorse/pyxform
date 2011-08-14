@@ -129,7 +129,7 @@ class Survey(Section):
                                                 break
                                         e.set(u"label", {lang: translation_label})
                                     else:
-                                        raise Exception(e.get_name(), "Must include a label")
+                                    	translation_label = None
                                 elif translation_key not in self._translations[lang]:
                                     if u"label" in e.to_dict():
                                         translation_label = e.to_dict()[u"label"]
@@ -140,6 +140,8 @@ class Survey(Section):
                                     translation_label = self._translations[lang][translation_key]
                                 
                                 #Initialize the entry to a dictionary
+                                if not translation_label:
+                                	self._translations[lang][translation_key] = {}
                                 if not (translation_key in self._translations[lang] and type(self._translations[lang][translation_key]) == dict):
                                     self._translations[lang][translation_key] = {"long": translation_label}
                                 
