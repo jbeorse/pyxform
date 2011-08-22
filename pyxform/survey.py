@@ -133,8 +133,16 @@ class Survey(Section):
                                     	translation_label = None
                                 elif translation_key not in self._translations[lang]:
                                     if u"label" in e.to_dict():
-                                        translation_label = e.to_dict()[u"label"]
-                                        e.set(u"label", {lang: translation_label})
+                                        labels = e.to_dict()[u"label"]
+                                        if type(labels) == dict and lang in labels:
+                                            translation_label = labels[u"lang"]
+                                            e.set(u"label", {lang: translation_label})
+                                        elif type(labels) == dict and not lang in labels:
+                                            translation_label = None
+                                            e.set(u"label", {lang: None})
+                                        else:
+                                            translation_label = e.to_dict()[u"label"]
+                                            e.set(u"label", {lang: translation_label})
                                     else:
                                         raise Exception(e.get_name(), "Must include a label")
                                 else:
@@ -149,29 +157,30 @@ class Survey(Section):
                                 self._translations[lang][translation_key][media_type_to_store]= text[media_type]
                             
                             else:
-                                raise Exception("Media type: " + media_type_to_store + " not supported")        
-    
+                                raise Exception("Media type: " + media_type_to_store + " not supported")
+                                
     def xml_translations_and_media(self):
-        result = []
-        for lang in self._translations.keys():
-            result.append(node("translation", lang=lang))
-            for label_name in self._translations[lang].keys():
-                itext_nodes = []
-                label_type = label_name.partition(":")[-1]
-                
-                if type(self._translations[lang][label_name]) == dict and label_type == "label":
-                    for media_type in self._translations[lang][label_name]:
-                        if media_type == "long":
-                            itext_nodes.append(node("value", self._translations[lang][label_name][media_type], form=media_type))
-                        elif media_type == "image":
-                            itext_nodes.append(node("value", "jr://images/" + self._translations[lang][label_name][media_type], form=media_type))
-                        else:
-                            itext_nodes.append(node("value", "jr://" + media_type + "/" + self._translations[lang][label_name][media_type], form=media_type))
-                else:
-                    itext_nodes.append(node("value", self._translations[lang][label_name]))
-
-                result[-1].appendChild(node("text", *itext_nodes, id=label_name))
-        return node("itext", *result)
+		result = []
+		for lang in self._translations.keys():
+		    result.append(node("translation", lang=lang))
+		    for label_name in self._translations[lang].keys():
+		        itext_nodes = []
+		        label_type = label_name.partition(":")[-1]
+		        
+		        if type(self._translations[lang][label_name]) == dict and label_type == "label":
+		            for media_type in self._translations[lang][label_name]:
+		                value = self._translations[lang][label_name][media_type]
+		                if media_type == "long":
+		                    itext_nodes.append(node("value", value, form=media_type))
+		                elif media_type == "image":
+		                    itext_nodes.append(node("value", "jr://images/" + value, form=media_type))
+		                else:
+		                    itext_nodes.append(node("value", "jr://" + media_type + "/" + value, form=media_type))
+		        else:
+		            itext_nodes.append(node("value", self._translations[lang][label_name]))
+		            
+		        result[-1].appendChild(node("text", *itext_nodes, id=label_name))
+		return node("itext", *result)
         
 
     def date_stamp(self):
