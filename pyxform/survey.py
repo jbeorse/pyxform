@@ -48,7 +48,6 @@ class Survey(Section):
     def xml_model(self):
         self._setup_translations()
         self._setup_media()
-        self._check_translations()
         if self._translations:
             return node("model",
                         self.xml_translations_and_media(),

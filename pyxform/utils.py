@@ -39,7 +39,11 @@ def node(tag, *args, **kwargs):
         text_node.data = unicode_args[0]
         result.appendChild(text_node)
     for n in args:
-        if type(n)!=unicode:
+        if type(n) == int or type(n) == float or type(n) == str:
+            text_node = Text()
+            text_node.data = unicode(n)
+            result.appendChild(text_node)
+        elif type(n)!=unicode:
             try:
                 result.appendChild(n)
             except:
