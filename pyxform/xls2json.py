@@ -33,6 +33,7 @@ DISABLED = u'disabled'
 #Special reserved values for type column that allow the user to set the form's title or id
 SET_TITLE = u"set form title"
 SET_ID = u"set form id"
+SET_DEFAULT_LANG = u"set default language"
 
 #Conversion dictionary from user friendly column names to meaningful values
 col_name_conversions = {
@@ -86,6 +87,7 @@ class ExcelReader(object):
         self._print_name = unicode(shortname) 
         self._title = unicode(shortname)
         self._id = unicode(shortname)
+        self._def_lang = unicode("English")
         self._parse_xls()
 
     def _parse_xls(self):
@@ -222,6 +224,11 @@ class SurveyReader(ExcelReader):
                 if not q[NAME].strip().find(" ") == -1:
                     raise Exception("Form id must not include any spaces", q[NAME])
                 self._id = q[NAME]
+                to_remove.append(q)
+                continue
+                
+            if q[TYPE] == SET_DEFAULT_LANG:
+                self._def_lang = q[NAME]
                 to_remove.append(q)
                 continue
                 

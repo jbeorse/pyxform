@@ -28,6 +28,7 @@ class Survey(Section):
         self._id_string = kwargs.get(u'id_string')
         self._title = kwargs.get(u'title')
         self._print_name = kwargs.get(u'print_name')
+        self._def_lang = kwargs.get(u'def_lang')
 
     def xml(self):
         """
@@ -47,6 +48,7 @@ class Survey(Section):
     def xml_model(self):
         self._setup_translations()
         self._setup_media()
+        self._check_translations()
         if self._translations:
             return node("model",
                         self.xml_translations_and_media(),
@@ -98,8 +100,8 @@ class Survey(Section):
                         
                         langsExist = langs != [u'']
                         if not langsExist and not translationsExist:
-                            #If no language is specified, just default to English
-                            langs = ["English"]
+                            langs = self._def_lang
+                            print langs
                             media_type_to_store = media_type
                         elif not langsExist and translationsExist:
                             #If no language is specified, but there are label translations, add the media file to 
@@ -162,7 +164,10 @@ class Survey(Section):
     def xml_translations_and_media(self):
 		result = []
 		for lang in self._translations.keys():
-		    result.append(node("translation", lang=lang))
+		    if lang == self._def_lang:
+		        result.append(node("translation", lang=lang,default=""))
+		    else:
+		        result.append(node("translation", lang=lang))
 		    for label_name in self._translations[lang].keys():
 		        itext_nodes = []
 		        label_type = label_name.partition(":")[-1]
@@ -177,7 +182,7 @@ class Survey(Section):
 		                else:
 		                    itext_nodes.append(node("value", "jr://" + media_type + "/" + value, form=media_type))
 		        else:
-		            itext_nodes.append(node("value", self._translations[lang][label_name]))
+		            itext_nodes.append(node("value", self._translations[lang][label_name], form="long"))
 		            
 		        result[-1].appendChild(node("text", *itext_nodes, id=label_name))
 		return node("itext", *result)
@@ -194,6 +199,9 @@ class Survey(Section):
         
     def set_print_name(self, print_name):
     	self._print_name = print_name
+    
+    def set_def_lang(self, def_lang):
+        self._def_lang = def_lang
 
     def id_string(self):
         if self._id_string is None:
@@ -207,6 +215,9 @@ class Survey(Section):
         
     def print_name(self):
     	return self._print_name
+    	
+    def def_lang(self):
+        return self._def_lang
 
     def xml_instance(self):
         result = Section.xml_instance(self)

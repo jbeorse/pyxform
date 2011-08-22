@@ -220,8 +220,10 @@ def render_survey_package(survey_package):
 
 def create_survey(
     name_of_main_section, sections,
-    id_string=None, title=None,
+    id_string=None, 
+    title=None,
     print_name=None,
+    default_language=None,
     question_type_dictionary=None
     ):
     builder = SurveyElementBuilder()
@@ -234,6 +236,7 @@ def create_survey(
     survey.set_id_string(id_string)
     survey.set_title(title)
     survey.set_print_name(print_name)
+    survey.set_def_lang(default_language)
     return survey
 
 def section_name(path_or_file_name):
@@ -258,6 +261,7 @@ def create_survey_from_path(path):
         "sections" : sections,
         "id_string" : excel_reader._id,
         "title" : excel_reader._title,
-        "print_name" : excel_reader._print_name
+        "print_name" : excel_reader._print_name,
+        "default_language" : excel_reader._def_lang,
         }
     return create_survey(**kwargs)
