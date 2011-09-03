@@ -43,7 +43,7 @@ col_name_conversions = {
     "required" : u"bind:required",
     "read only" : u"bind:readonly",
     "constraint" : u"bind:constraint",
-    "constraing message" : u"bind:jr:constraintMsg",
+    "constraint message" : u"bind:jr:constraintMsg",
     "calculation" : u"bind:calculate",
     "command" : u"type",
     "tag" : u"name",
