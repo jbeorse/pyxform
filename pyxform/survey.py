@@ -282,6 +282,7 @@ class Survey(Section):
         return repl
 
     def insert_output_values(self, text):
+        text = unicode(text)
         bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
         result = re.sub(bracketed_tag, self._var_repl_output_function(), text)
         return result, not result == text
