@@ -99,8 +99,7 @@ class Survey(Section):
                         
                         langsExist = langs != [u'']
                         if not langsExist and not translationsExist:
-                            langs = self._def_lang
-                            print langs
+                            langs = {self._def_lang}
                             media_type_to_store = media_type
                         elif not langsExist and translationsExist:
                             #If no language is specified, but there are label translations, add the media file to 
