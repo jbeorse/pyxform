@@ -174,13 +174,15 @@ class Survey(Section):
 		            for media_type in self._translations[lang][label_name]:
 		                value = self._translations[lang][label_name][media_type]
 		                if media_type == "long":
-		                    itext_nodes.append(node("value", value, form=media_type))
+		                    value, outputInserted = self.insert_output_values(value)
+		                    itext_nodes.append(node("value", value, form=media_type, toParseString=outputInserted))
 		                elif media_type == "image":
 		                    itext_nodes.append(node("value", "jr://images/" + value, form=media_type))
 		                else:
 		                    itext_nodes.append(node("value", "jr://" + media_type + "/" + value, form=media_type))
 		        else:
-		            itext_nodes.append(node("value", self._translations[lang][label_name], form="long"))
+		            value, outputInserted = self.insert_output_values(self._translations[lang][label_name])
+		            itext_nodes.append(node("value", value, form="long"))
 		            
 		        result[-1].appendChild(node("text", *itext_nodes, id=label_name))
 		return node("itext", *result)
